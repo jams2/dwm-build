@@ -1,0 +1,9 @@
+tags
+GTAGS
+GRTAGS
+GPATH
+*.o
+*.diff
+dwm
+*.*~
+*.*#
