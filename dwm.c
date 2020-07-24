@@ -120,6 +120,7 @@ struct Monitor {
 	int mx, my, mw, mh;   /* screen size */
 	int wx, wy, ww, wh;   /* window area  */
  	int gappx;            /* gaps between windows */
+	int sd_maxwidth;      /* max width for centered window (%) */
 	unsigned int seltags;
 	unsigned int sellt;
 	unsigned int tagset[2];
@@ -184,6 +185,7 @@ static void manage(Window w, XWindowAttributes *wa);
 static void mappingnotify(XEvent *e);
 static void maprequest(XEvent *e);
 static void monocle(Monitor *m);
+static void speed_dating(Monitor *m);
 static void motionnotify(XEvent *e);
 static void movemouse(const Arg *arg);
 static Client *nexttiled(Client *c);
@@ -642,6 +644,7 @@ createmon(void)
 	m->showbar = showbar;
 	m->topbar = topbar;
  	m->gappx = gappx;
+	m->sd_maxwidth = sd_maxwidth;
 	m->lt[0] = &layouts[0];
 	m->lt[1] = &layouts[1 % LENGTH(layouts)];
 	strncpy(m->ltsymbol, layouts[0].symbol, sizeof m->ltsymbol);
@@ -1133,7 +1136,11 @@ monocle(Monitor *m)
 void
 speed_dating(Monitor *m)
 {
-    
+	Client *c;
+	int cwidth = (sd_maxwidth / 100.0) * m->ww;
+	int x = m->wx + ((m->ww - cwidth) / 2);
+	for (c = nexttiled(m->clients); c; c = nexttiled(c->next))
+		resize(c, x, m->wy + gappx, cwidth, m->wh - (2 * gappx), 0);
 }
 
 void
