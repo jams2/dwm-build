@@ -1117,6 +1117,12 @@ monocle(Monitor *m)
 }
 
 void
+speed_dating(Monitor *m)
+{
+    
+}
+
+void
 motionnotify(XEvent *e)
 {
 	static Monitor *mon = NULL;
