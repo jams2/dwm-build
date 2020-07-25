@@ -185,7 +185,7 @@ static void manage(Window w, XWindowAttributes *wa);
 static void mappingnotify(XEvent *e);
 static void maprequest(XEvent *e);
 static void monocle(Monitor *m);
-static void speed_dating(Monitor *m);
+static void widescreen_focus(Monitor *m);
 static void motionnotify(XEvent *e);
 static void movemouse(const Arg *arg);
 static Client *nexttiled(Client *c);
@@ -1134,9 +1134,14 @@ monocle(Monitor *m)
 }
 
 void
-speed_dating(Monitor *m)
+widescreen_focus(Monitor *m)
 {
 	Client *c;
+	int n = 0;
+	for (c = m->clients; c; c = c->next)
+		if (ISVISIBLE(c)) n++;
+	if (n > 1) snprintf(m->ltsymbol, sizeof m->ltsymbol, ">[%d]<", n);
+
 	int cwidth = (sd_maxwidth / 100.0) * m->ww;
 	int x = m->wx + ((m->ww - cwidth) / 2);
 	for (c = nexttiled(m->clients); c; c = nexttiled(c->next))

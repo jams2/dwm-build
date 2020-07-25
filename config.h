@@ -45,7 +45,7 @@ static const Layout layouts[] = {
 	{ "[]=",      tile },    /* first entry is default */
 	{ "><>",      NULL },    /* no layout function means floating behavior */
 	{ "[M]",      monocle },
-	{ ">[]<",     speed_dating },
+	{ ">[]<",     widescreen_focus },
 };
 
 /* key definitions */
