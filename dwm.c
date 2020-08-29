@@ -45,6 +45,10 @@
 #include "util.h"
 
 /* macros */
+#define GAPPED_W(m)             ((m)->ww - 2 * gappx)
+#define GAPPED_H(m)             ((m)->wh - 2 * gappx)
+#define GAPPED_X(m)             ((m)->wx + gappx)
+#define GAPPED_Y(m)             ((m)->wy + gappx)
 #define BUTTONMASK              (ButtonPressMask|ButtonReleaseMask)
 #define CLEANMASK(mask)         (mask & ~(numlockmask|LockMask) & (ShiftMask|ControlMask|Mod1Mask|Mod2Mask|Mod3Mask|Mod4Mask|Mod5Mask))
 #define INTERSECT(x,y,w,h,m)    (MAX(0, MIN((x)+(w),(m)->wx+(m)->ww) - MAX((x),(m)->wx)) \
@@ -120,7 +124,6 @@ struct Monitor {
 	int mx, my, mw, mh;   /* screen size */
 	int wx, wy, ww, wh;   /* window area  */
  	int gappx;            /* gaps between windows */
-	int sd_maxwidth;      /* max width for centered window (%) */
 	unsigned int seltags;
 	unsigned int sellt;
 	unsigned int tagset[2];
@@ -644,7 +647,6 @@ createmon(void)
 	m->showbar = showbar;
 	m->topbar = topbar;
  	m->gappx = gappx;
-	m->sd_maxwidth = sd_maxwidth;
 	m->lt[0] = &layouts[0];
 	m->lt[1] = &layouts[1 % LENGTH(layouts)];
 	strncpy(m->ltsymbol, layouts[0].symbol, sizeof m->ltsymbol);
@@ -1130,7 +1132,7 @@ monocle(Monitor *m)
 	if (n > 0) /* override layout symbol */
 		snprintf(m->ltsymbol, sizeof m->ltsymbol, "[%d]", n);
 	for (c = nexttiled(m->clients); c; c = nexttiled(c->next))
-		resize(c, m->wx + gappx, m->wy + gappx, m->ww - 2 * gappx, m->wh - 2 * gappx, 0);
+		resize(c, GAPPED_X(m), GAPPED_Y(m), GAPPED_W(m), GAPPED_H(m), 0);
 }
 
 void
@@ -1139,13 +1141,14 @@ widescreen_focus(Monitor *m)
 	Client *c;
 	int n = 0;
 	for (c = m->clients; c; c = c->next)
-		if (ISVISIBLE(c)) n++;
+		if (ISVISIBLE(c))
+			n++;
 	if (n > 1) snprintf(m->ltsymbol, sizeof m->ltsymbol, ">[%d]<", n);
 
-	int cwidth = (sd_maxwidth / 100.0) * m->ww;
+	int cwidth = (widescreen_maxwidth / 100.0) * m->ww;
 	int x = m->wx + ((m->ww - cwidth) / 2);
 	for (c = nexttiled(m->clients); c; c = nexttiled(c->next))
-		resize(c, x, m->wy + gappx, cwidth, m->wh - (2 * gappx), 0);
+		resize(c, x, GAPPED_Y(m), cwidth, GAPPED_H(m), 0);
 }
 
 void
