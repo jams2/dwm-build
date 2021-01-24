@@ -8,8 +8,8 @@ static const unsigned int widescreen_maxwidth = 60;	/* (%) */
 static const unsigned int snap      = 32;       /* snap pixel */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
-static const char *fonts[]          = { "monospace:size=12" };
-static const char dmenufont[]       = "monospace:size=12";
+static const char *fonts[]          = { "Fira Code:size=12" };
+static const char dmenufont[]       = "Fira Code:size=12";
 static const char col_gray1[]       = "#111111";
 static const char col_gray2[]       = "#444444";
 static const char col_gray3[]       = "#bbbbbb";
@@ -30,9 +30,8 @@ static const Rule rules[] = {
 	 *	WM_CLASS(STRING) = instance, class
 	 *	WM_NAME(STRING) = title
 	 */
-	/* class      instance    title       tags mask     isfloating   monitor */
-	{ "Gimp",     NULL,       NULL,       0,            1,           -1 },
-	{ "Firefox",  NULL,       NULL,       1 << 8,       0,           -1 },
+	/* class      		instance    title       tags mask     isfloating   monitor */
+	{ NULL,			NULL,	    "edit-server",	0,	      1,	   -1 },
 };
 
 /* layout(s) */
@@ -42,9 +41,9 @@ static const int resizehints = 1;    /* 1 means respect size hints in tiled resi
 
 static const Layout layouts[] = {
 	/* symbol     arrange function */
+        { "[M]",      monocle },
 	{ "[]=",      tile },    /* first entry is default */
 	{ "><>",      NULL },    /* no layout function means floating behavior */
-	{ "[M]",      monocle },
 	{ ">[]<",     widescreen_focus },
 };
 
@@ -62,7 +61,7 @@ static const Layout layouts[] = {
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_beige, "-sf", col_gray1, NULL };
-static const char *termcmd[]  = { "st", NULL };
+static const char *termcmd[]  = { "st", "-f", "Fira Code:size=12", NULL };
 
 /* see /usr/include/X11/XF86keysym.h */
 static Key keys[] = {
@@ -79,9 +78,9 @@ static Key keys[] = {
 	{ MODKEY,                       XK_Return, zoom,           {0} },
 	{ MODKEY,                       XK_Tab,    view,           {0} },
 	{ MODKEY|ShiftMask,             XK_c,      killclient,     {0} },
-	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
-	{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[1]} },
-	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },
+	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[0]} },
+	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[1]} },
+	{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[2]} },
 	{ MODKEY,                       XK_s,      setlayout,      {.v = &layouts[3]} },
 	{ MODKEY,                       XK_space,  setlayout,      {0} },
 	{ MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },
@@ -98,8 +97,11 @@ static Key keys[] = {
 	{ MODKEY,                       XK_e,      spawn,          SHCMD("emacs") },
 	{ MODKEY,                       XK_F2,     spawn,          SHCMD("toggle_backlight") },
 	{ MODKEY,                       XK_F7,     spawn,          SHCMD("toggle_lg_monitor") },
-	{ 0,                            XF86XK_AudioRaiseVolume, spawn, SHCMD("volume_up") },
-	{ 0,                            XF86XK_AudioLowerVolume, spawn, SHCMD("volume_down") },
+	{ MODKEY,                       XK_F11, spawn, SHCMD("toggle_bluetooth_profile") },
+	{ MODKEY,                       XK_F10, spawn, SHCMD("volume_up") },
+	{ MODKEY,                       XK_F9, spawn, SHCMD("volume_down") },
+	{ MODKEY,                       XK_F8, spawn, SHCMD("volume_toggle") },
+	{ 0,	                        XK_Print, spawn, SHCMD("flameshot gui") },
 	{ 0,                            XF86XK_MonBrightnessUp, spawn, SHCMD("inc_brightness") },
 	{ 0,                            XF86XK_MonBrightnessDown, spawn, SHCMD("dec_brightness") },
 	TAGKEYS(                        XK_1,                      0)
@@ -130,4 +132,3 @@ static Button buttons[] = {
 	{ ClkTagBar,            MODKEY,         Button1,        tag,            {0} },
 	{ ClkTagBar,            MODKEY,         Button3,        toggletag,      {0} },
 };
-
